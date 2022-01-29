@@ -20,7 +20,6 @@ app.get('/download', (req, res) => {
     // Listening for the 'finish' event
     writeableStream.on('finish', () => {
         console.log(`${videoTitle} downloaded successfully`);
-        // res.send(`${videoTitle} downloaded successfully`);
         res.download(`${videoTitle}.mp3`);
 
     });
@@ -28,6 +27,7 @@ app.get('/download', (req, res) => {
     // Plug it into the ReadableStream
     ytdl(videoURL, {
         format: "mp3",
+        filter: "audioonly"
     }).pipe(writeableStream);
 
 });
