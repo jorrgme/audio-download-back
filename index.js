@@ -15,36 +15,20 @@ app.get('/download', (req, res) => {
     videoTitle = req.query.videoTitle;
 
     // Create WriteableStream
-    // const writeableStream = fs.createWriteStream(`${videoTitle}.mp3`);
+    const writeableStream = fs.createWriteStream(`${videoTitle}.mp3`);
 
     // Listening for the 'finish' event
-    // writeableStream.on('finish', () => {
-    //     console.log(`${videoTitle} downloaded successfully`);
-    //     // res.send(`${videoTitle} downloaded successfully`);
-    //     res.download(`${videoTitle}.mp3`);
+    writeableStream.on('finish', () => {
+        console.log(`${videoTitle} downloaded successfully`);
+        // res.send(`${videoTitle} downloaded successfully`);
+        res.download(`${videoTitle}.mp3`);
 
-    // });
+    });
 
     // Plug it into the ReadableStream
-    // ytdl(videoURL, {
-    //     format: "mp3",
-    // }).pipe(writeableStream);
-
-    var stream = ytdl(videoURL, {
-      quality: "highestaudio",
-      filter: "audioonly",
-    })
-      .on("progress", (chunkSize, downloadedChunk, totalChunk) => {
-        // console.log(downloadedChunk);
-        clientGlob.emit("progressEventSocket", [
-          (downloadedChunk * 100) / totalChunk,
-        ]);
-        clientGlob.emit("downloadCompletedServer", [downloadedChunk]);
-        if (downloadedChunk == totalChunk) {
-          console.log("Downloaded");
-        }
-      })
-      .pipe(res);
+    ytdl(videoURL, {
+        format: "mp3",
+    }).pipe(writeableStream);
 
 });
 
